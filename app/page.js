@@ -2,6 +2,39 @@ import Image from "next/image";
 import Link from "next/link";
 import OpenModal from "./client";
 
+// 각 페이지에 대한 컴포넌트
+function Home() {
+  return <h2>스터디히어로 - 메인 페이지</h2>;
+}
+
+function Login() {
+  return <h2>로그인 페이지</h2>;
+}
+
+function Settings() {
+  return <h2>설정 페이지 (MBTI, 관심 분야 선택)</h2>;
+}
+
+function Calendar() {
+  return <h2>캘린더 페이지</h2>;
+}
+
+function StudyPlanner() {
+  return <h2>스터디 플래너 페이지</h2>;
+}
+
+function Rankings() {
+  return <h2>랭킹 페이지</h2>;
+}
+
+function Profile() {
+  return <h2>프로필 페이지</h2>;
+}
+
+function Chat() {
+  return <h2>채팅 페이지</h2>;
+}
+
 export default function Page() {
   return (
     <div className="grid items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
