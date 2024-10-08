@@ -98,8 +98,6 @@ export default function Page() {
           </li>
         </ul>
       </details>
-
-      <OpenModal />
       <dialog id="my_modal_1" className="modal">
         <form method="dialog" className="modal-box">
           <p className="py-4">
