@@ -1,0 +1,54 @@
+/* firstpage.css */
+body {
+    background-color: white; /* 흰색 배경 */
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.artboard {
+    background-color: white; /* 아트보드의 배경색을 흰색으로 설정 */
+    border-radius: 16px; /* 모서리를 둥글게 설정 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+} 
+
+.select {
+    height: 22px !important;
+    padding: 0 10px !important;
+    border: 1px solid #D2D2D2 !important; /* 테두리 스타일 추가 */
+    border-radius: 0.375rem !important; /* 모서리 둥글게 */
+    background-color: #D2D2D2 !important; /* 배경색 */
+}
+
+
+@font-face {
+    font-family: 'NotoSansKR-Regular';
+    src: url('/fonts/NotoSansKR-Regular.ttf') format('truetype'); /* format을 'truetype'으로 변경 */
+    font-weight: normal; 
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NotoSansKR-Semibold';
+    src: url('/fonts/NotoSansKR-Semibold.ttf') format('truetype'); /* format을 'truetype'으로 변경 */
+    font-weight: 400; /* Semibold는 일반적으로 600으로 설정 */
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NotoSansKR-Bold';
+    src: url('/fonts/NotoSansKR-Bold.ttf') format('truetype'); /* Bold 폰트 추가 */
+    font-weight: bold; 
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-ExtraBold';
+    src: url('/fonts/Pretendard-ExtraBold.woff') format('woff');
+    font-weight: normal; 
+    font-style: normal;
+}
