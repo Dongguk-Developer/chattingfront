@@ -1,89 +1,39 @@
 import Image from "next/image";
 import Link from "next/link";
-import OpenModal from "../client";
+import '../login/login.css'; // 로그인 스타일 가져오기
 
-export default function Page() {
-  return (
-    <div className="grid items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <div className="p-4">
-        <button className="btn btn-primary">primary</button>
-        <button className="btn btn-secondary">secondary</button>
-        <button className="btn btn-accent">accent</button>
-      </div>
+export default function Login() {
+    return (
+        <div className="flex flex-col justify-center items-center min-h-screen bg-white"> {/* 배경색을 흰색으로 설정하고 중앙 정렬 */}
+            {/* 아트보드 추가 */}
+            <div className="artboard phone-1 flex flex-col h-full"> {/* 아트보드 안에서 요소들을 수직으로 정렬 */}
+                <div className="flex-grow flex flex-col items-center justify-center"> {/* 중앙 정렬 유지 */}
+                    {/* 로고 이미지 */}
+                    <Image 
+                        src="/logo.png" // 실제 로고 파일 경로
+                        alt="StudyHero"
+                        width={126} // 길이를 126px로 설정
+                        height={195} // 높이를 195px로 설정
+                    />
+                    {/* STUDYHERO 텍스트 */}
+                    <h1 className="mt-2 text-2xl font-bold studytitle"> {/* 마진 값 수정 */}
+                        STUDY HERO
+                    </h1>
+                </div>
 
-      <div className="p-4" data-theme="cupcake">
-        <button className="btn btn-primary">Primary</button>
-        <button className="btn btn-secondary">Secondary</button>
-        <button className="btn btn-accent">Accent</button>
-      </div>
-
-      <div className="tabs tabs-lifted p-4">
-        <button className="tab">Tab 1</button>
-        <button className="tab tab-active">Tab 2</button>
-        <button className="tab">Tab 3</button>
-        <button className="tab"></button>
-      </div>
-
-      <div className="p-4">
-        <input type="checkbox" className="toggle" />
-        <input type="checkbox" className="toggle toggle-primary" />
-        <input type="checkbox" className="toggle toggle-secondary" />
-        <input type="checkbox" className="toggle toggle-accent" />
-        <br />
-        <input type="checkbox" className="checkbox" />
-        <input type="checkbox" className="checkbox-primary checkbox" />
-        <input type="checkbox" className="checkbox-secondary checkbox" />
-        <input type="checkbox" className="checkbox-accent checkbox" />
-        <br />
-        <input type="radio" name="radio" className="radio" />
-        <input type="radio" name="radio" className="radio-primary radio" />
-        <input type="radio" name="radio" className="radio-secondary radio" />
-        <input type="radio" name="radio" className="radio-accent radio" />
-      </div>
-
-      <div className="card m-4 w-80 shadow">
-        <figure>
-          <img src="https://picsum.photos/id/103/500/250" />
-        </figure>
-        <div className="card-body">
-          <h2 className="card-title">DaisyUI Card</h2>
-          <p>
-            Rerum reiciendis beatae tenetur excepturi aut pariatur est eos. Sit
-            sit necessitatibus.
-          </p>
+                {/* 카카오 로그인 버튼 */}
+                <div className="flex justify-center mb-10"> {/* mb-5로 하단 여백 추가 */}
+                    <Link href="/auth/kakao"> {/* 클릭 시 이동할 경로 지정 */}
+                        <Image 
+                            src="/kakaologin.png" // 카카오 로그인 버튼 이미지 경로
+                            alt="카카오로 로그인"
+                            width={200} // 적당한 사이즈로 설정 가능
+                            height={50} // 적당한 사이즈로 설정 가능
+                            className="cursor-pointer" // 커서를 포인터로 변경
+                        />
+                    </Link>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <details className="dropdown m-4">
-        <summary className="btn m-1">open/close dropdown</summary>
-        <ul className="dropdown-content menu z-[2] w-52 rounded-box bg-base-200 p-2">
-          <li>
-            <a>Item 1</a>
-          </li>
-          <li>
-            <a>Item 2</a>
-          </li>
-        </ul>
-      </details>
-
-      <OpenModal />
-      <dialog id="my_modal_1" className="modal">
-        <form method="dialog" className="modal-box">
-          <p className="py-4">
-            Press ESC key or click the button below to close
-          </p>
-          <div className="modal-action">
-            <button className="btn">Close</button>
-          </div>
-        </form>
-      </dialog>
-
-      <ul className="steps my-4 w-full">
-        <li className="step step-primary">Register</li>
-        <li className="step step-primary">Choose plan</li>
-        <li className="step">Purchase</li>
-        <li className="step">Receive Product</li>
-      </ul>
-    </div>
-  );
+    );
 }
