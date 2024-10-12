@@ -19,7 +19,14 @@ body {
 @font-face {
     font-family: 'Pretendard-ExtraBold';
     src: url('/fonts/Pretendard-ExtraBold.woff') format('woff');
-    font-weight: bold; /* bold로 수정 */
+    font-weight: bold; 
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NotoSansKR-Regular';
+    src: url('/fonts/NotoSansKR-Regular.ttf') format('ttf');
+    font-weight: normal; 
     font-style: normal;
 }
 

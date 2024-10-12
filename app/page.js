@@ -11,6 +11,10 @@ function Login() {
   return <h2>로그인 페이지</h2>;
 }
 
+function FirstPage() {
+  return <h2>초기 설정</h2>; 
+}
+
 function Settings() {
   return <h2>설정 페이지 (MBTI, 관심 분야 선택)</h2>;
 }
