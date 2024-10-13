@@ -1,46 +1,46 @@
 "use client"; // 클라이언트 컴포넌트로 지정
 
-import { useState } from "react"; // useState를 import하여 상태 관리
+import { useState } from "react"; 
 import Image from "next/image";
 import Link from "next/link";
-import '../login/login.css'; // 로그인 스타일 가져오기
+import '../login/login.css';
 
 export default function Login() {
-    const [alert, setAlert] = useState(null); // 알림 상태 관리
-    const [isFirstMember, setIsFirstMember] = useState(true); // 첫 사용자인지 여부
+    const [alert, setAlert] = useState(null); // 알림
+    const [isFirstMember, setIsFirstMember] = useState(true); // 첫 사용자
 
     const handleKakaoLogin = async () => {
-        // 여기에 실제 OAuth 로직을 나중에 구현할 수 있습니다.
+        // OAuth 
 
-        // 로그인 성공 시 알림
+        // 로그인성공
         setAlert({
             type: "success",
             message: "로그인 성공. 페이지 이동 중..",
         });
 
-        // 로그인 성공 후 첫 사용자인 경우 초기 설정 페이지로 이동
+        // 첫사용자 이동
         if (isFirstMember) {
             // 초기 설정 페이지로 이동
             setTimeout(() => {
-                window.location.href = "firstpage"; // 초기 설정 페이지 URL로 변경
+                window.location.href = "firstpage"; // 초기 설정 페이지
             }, 2000);
         } else {
             // 첫 사용자가 아닌 경우 메인 페이지로 이동
             setTimeout(() => {
-                window.location.href = "/page"; // 메인 페이지 URL로 변경
+                window.location.href = "/page"; // 메인 페이지 
             }, 2000);
         }
 
-        // 로그인 실패 시 알림
+        // 로그인 실패
         // setAlert({
         //     type: "error",
         //     message: "로그인 실패.",
         // });
 
-        // 예시로 성공 알림 후 2초 후에 제거
+        // 알림 1초
         setTimeout(() => {
             setAlert(null);
-        }, 2000);
+        }, 1000);
     };
 
     return (

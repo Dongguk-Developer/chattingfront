@@ -11,7 +11,7 @@ body {
     flex-direction: column;
 }
 .artboard {
-    background-color: white; /* 아트보드의 배경색을 흰색으로 설정 */
+    background-color: white; /* 아트보드의 배경색 흰색 */
     border-radius: 16px; /* 모서리를 둥글게 설정 */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 } 
