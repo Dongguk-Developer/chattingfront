@@ -34,25 +34,25 @@ export default function FirstPage() {
     const router = useRouter();
 
     const handleBackButtonClick = () => {
-        router.push('/login'); // 로그인 페이지로 이동
+        router.push('/login'); // 로그인 페이지 이동
     };
 
     const handleComplete = () => {
-        // 입력 완료 버튼 클릭 시 MainPage로 이동
+        // 입력 완료 클릭시 MainPage 이동
         router.push('/MainPage');
     };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="artboard phone-1 flex flex-col h-full relative">
-                {/* 상단 화살표 이미지 */}
-                <div className="absolute top-1 left-1 mt-6 p-4 z-10"> {/* z-10 추가 */}
+                {/* 이전페이지이동 */}
+                <div className="absolute top-1 left-1 mt-6 p-4 z-10"> 
                     <button onClick={handleBackButtonClick} className="block">
                         <Image src="/pagenation.png" alt="이전 페이지로 이동" width={30} height={30} />
                     </button>
                 </div>
 
-                {/* 로그인 초기설정 텍스트를 그룹화 */}
+                {/* 텍스트그룹 */}
                 <div className="absolute top-0 left-4 mt-6 p-4 flex flex-col items-start">
                     <div 
                         className="text-xs font-medium" 
@@ -65,11 +65,11 @@ export default function FirstPage() {
                     </div>
                 </div>
 
-                {/* 프로필 사진 추가 */}
+                {/* 프로필사진 추가 */}
                 <div className="absolute top-16 left-1/2 transform -translate-x-1/2 mt-8">
                     <div
                         id="profile-picture"
-                        className="mask mask-circle cursor-pointer bg-gray-300 relative" // relative 추가
+                        className="mask mask-circle cursor-pointer bg-gray-300 relative" // relative
                         style={{ width: '90px', height: '90px', objectFit: 'cover' }}
                         onClick={handleProfilePictureClick}
                     >
@@ -95,10 +95,10 @@ export default function FirstPage() {
                     />
                 </div>
 
-                {/* 프로필 사진 아래 카드 박스 추가 */}
+                {/*프로필 사진 아래 카드 박스*/}
                 <div className="flex w-full flex-col border-opacity-50 mt-12">
                     <div className="card bg-[#EDEDED] rounded-box w-4/5 mx-auto mt-20 flex items-center justify-center h-auto">
-                        {/* 카드 상단에 텍스트 박스 두 개 추가 */}
+                        {/*카드 상단에 텍스트 박스*/}
                         <div className="flex flex-col space-y-4 p-4">
                             <input
                                 type="text"
@@ -116,7 +116,7 @@ export default function FirstPage() {
                                 value={age}
                                 onChange={(e) => setAge(e.target.value)}
                             />
-                            {/* MBTI 선택 박스 추가 */}
+                            {/* MBTI 선택 */}
                             <select 
                                 className="select select-bordered select-sm w-full mb-4"
                                 value={mbti}
@@ -141,7 +141,7 @@ export default function FirstPage() {
                                 <option value="INFP">INFP</option>
                                 <option value="INTP">INTP</option>
                             </select>
-                            {/* 직업 선택 박스 추가 */}
+                            {/* 직업 선택 */}
                             <select
                                 className="select select-bordered select-sm w-full mb-4"
                                 value={job}
@@ -155,7 +155,7 @@ export default function FirstPage() {
                                 <option value="편입">편입</option>
                                 <option value="기타">기타</option>
                             </select>
-                            {/* 관심 분야 선택 박스 추가 */}
+                            {/* 관심 분야 선택 */}
                             <select
                                 className="select select-bordered select-sm w-full mb-4"
                                 value={interest}
@@ -179,7 +179,7 @@ export default function FirstPage() {
                     </div>
                 </div>
 
-                {/* 화면 하단에 입력 완료 버튼 추가 */}
+                {/*입력 완료 버튼*/}
                 <div className="absolute bottom-8 left-0 w-full flex justify-center">
                     <button 
                         className="btn btn-sm w-4/5 max-w-xs mx-auto" 
