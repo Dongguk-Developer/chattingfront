@@ -37,36 +37,37 @@ export default function Login() {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen base-100 relative">
             {alert && (
-                <div 
-                    role="alert" 
-                    className={`alert ${alert.type === "success" ? "alert-success" : "alert-error"} absolute top-0 left-1/2 transform -translate-x-1/2 neutral-content text-xs max-w-xs`} 
-                    style={{ padding: '4px 8px', marginTop: '20px', display: 'flex', alignItems: 'center' }}
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 shrink-0 stroke-current"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                    >
-                        {alert.type === "success" ? (
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                        ) : (
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                            />
-                        )}
-                    </svg>
-                    <span className="ml-2">{alert.message}</span>
-                </div>
+    <div 
+        role="alert" 
+        className={`alert ${alert.type === "success" ? "bg-success text-success-content" : "bg-error text-error-content"} absolute top-0 left-1/2 transform -translate-x-1/2`} 
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+        >
+            {alert.type === "success" ? (
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+            ) : (
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
             )}
+        </svg>
+        <span className="ml-2">{alert.message}</span>
+    </div>
+)}
+
+
 
             <div className="flex-grow flex flex-col items-center justify-center pt-16">
                 <img
