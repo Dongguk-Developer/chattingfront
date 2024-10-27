@@ -1,8 +1,20 @@
 .calendar-container {
-    text-align: center;
-    font-family: "font-sans";
-    font-weight: bold; /* 전체 글씨를 진하게 설정 */
+    max-height: 600px; /* 기본 높이 */
+    overflow-y: auto;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+.calendar-container.expanded {
+    max-height: 100%; /* 확장될 때 높이 제한 해제 */
 }
+
+.divider {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+.calendar-container.expanded .divider {
+    transform: translateY(-20px); /* 경계선 위로 이동 */
+  }
 
 h2 {
     font-size: 24px;
