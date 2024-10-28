@@ -153,11 +153,11 @@ export default function Calendar() {
   };
 
   return (
-    <div className="calendar-container" style={{ textAlign: 'center' }}>
-      <h2>나의 캘린더</h2>
+    <div className="bg-base-100 min-h-screen font-sans" style={{ textAlign: 'center', marginBottom: '20px' }}>
+      <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>나의 캘린더</h1> {/* 중앙에 위치한 텍스트 */}
 
       {showAlert && (
-        <div role="alert" className="alert alert-error text-white" style={{
+        <div role="alert" className="alert alert-error text-error-content" style={{
             position: 'absolute',
             top: '20px',
             left: '50%',
@@ -179,7 +179,7 @@ export default function Calendar() {
         </div>
       )}
 
-      <div className="custom-date-selector flex items-center justify-between mb-4">
+      <div className="custom-date-selector flex items-center justify-between mb-4 text-base-content">
         <div className="flex items-center">
           <select value={selectedYear} onChange={handleYearChange} className="font-bold text-xl p-2 ml-8 mr-4">
             {years.map(year => (
@@ -214,12 +214,12 @@ export default function Calendar() {
       <div className="divider" style={{ width: '100%' }}></div>
 
             {/* 등록된 일정 카드들 */}
-            {sortedEvents.slice(0, visibleEventsCount).map((event, index) => (
-        <div 
+          {sortedEvents.slice(0, visibleEventsCount).map((event, index) => (
+          <div 
             key={index} 
-            className="card bg-base-300 rounded-box my-4" 
+            className="card bg-base-300 rounded-box my-4 text-base-content" 
             onClick={() => openEditModal(index)} // 클릭 시 수정 모달 열기
-        >
+          >
           <div className="flex justify-between w-full">
             <div className="flex-1 text-left">
               <div style={{ fontWeight: 'bold' }}>{event.title}</div>
@@ -228,7 +228,7 @@ export default function Calendar() {
             <div className="flex items-center ml-2">
               {event.isDDay && (
                 <div className="font-bold mr-2">
-                  D{event.dDayCount >= 0 ? `-${event.dDayCount}` : `+${Math.abs(event.dDayCount)}`}
+                  D{event.dDayCount >= 0 ? `-${event.dDayCount}` : `+${Math.abs(event.dDayCount)}`}        {/* 디데이 계산 */}
                 </div>
               )}
             </div>
@@ -238,16 +238,16 @@ export default function Calendar() {
 
       {/* 더보기 버튼 */}
       {events.length > visibleEventsCount && (
-        <button className="btn btn-ghost btn-sm" onClick={handleShowMore}>
+        <button className="btn btn-ghost btn-sm text-base-content" onClick={handleShowMore}>
           더보기
         </button>
       )}
 
       {/* 일정 추가 모달 */}
       <dialog id="my_modal_3" className="modal">
-        <div className="modal-box">
+        <div className="modal-box bg-base-200 text-base-content">
           <form method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => document.getElementById('my_modal_3').close()}>✕</button>
+            <button className="btn btn-sm F absolute right-2 top-2" onClick={() => document.getElementById('my_modal_3').close()}>✕</button>
             <h3 className="font-bold text-lg">일정 추가</h3>
             <div className="py-4">
               <div>
@@ -278,7 +278,7 @@ export default function Calendar() {
               </label>
             </div>
             <div className="modal-action">
-              <button className="btn" onClick={handleAddEvent}>추가하기</button>
+              <button className="btn btn-outline bg-base-300 text-base-content" onClick={handleAddEvent}>추가하기</button>
             </div>
           </form>
         </div>
@@ -286,7 +286,7 @@ export default function Calendar() {
 
       {/* 수정 모달 */}
       <dialog id="edit_modal" className="modal">
-        <div className="modal-box">
+        <div className="modal-box bg-base-200">
           <form method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" onClick={() => document.getElementById('edit_modal').close()}>✕</button>
             <h3 className="font-bold text-lg">일정 수정</h3>

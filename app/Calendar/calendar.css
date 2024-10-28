@@ -30,9 +30,10 @@ h2 {
 }
 
 .react-calendar__navigation button {
-    color: black;
+    color: var(--bc);
     font-weight: bolder;
 }
+
 
 /* 오늘 날짜 강조 색상 수정 */
 /* 오늘 날짜 강조 색상 수정 */
@@ -53,21 +54,7 @@ h2 {
     font-size: 1rem; /* 글씨 크기 증가 (1.5rem) */
 }
 
-.custom-date-selector 
-.custom-date-selector select {
-    content: '';
-    position: absolute;
-    display: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 30px;
-    height: 30px;
-    background: #3688ff;
-    color: white;
-    border-radius: 50%;
-    align-content: center;
-}
+
 
 .custom-date-selector button {
     font-weight: normal; /* 일정 추가 버튼 글씨를 일반으로 설정 */

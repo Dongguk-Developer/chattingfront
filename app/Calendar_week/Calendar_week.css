@@ -1,0 +1,53 @@
+.calendar-container {
+    text-align: center; /* 제목을 가운데 정렬 */
+  }
+
+h2 {
+    font-size: 24px;
+    font-weight: bold; /* 제목 글씨를 더 진하게 설정 */
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.add-event-button {
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+
+.react-calendar__navigation button {
+    color: var(--bc); 
+    font-weight: bolder;
+}
+
+/* 오늘 날짜 강조 색상 수정 */
+/* 오늘 날짜 강조 색상 수정 */
+.react-calendar__tile--now, /* 오늘 날짜 */
+.react-calendar__tile--selected { /* 선택된 날짜 */
+    background: #c8ddff; /* 연한 하늘색 배경 */
+    border-radius: 50%; /* 동그란 형태로 설정 */
+    color: #0062ff; /* 글씨 색상 (파란색) */
+}
+
+/* 요일 글씨 색상 설정 */
+.react-calendar__month-view__weekdays__weekday {
+    color: rgb(168, 168, 168); /* 요일 글씨 색상 회색 */
+}
+
+
+
+.custom-date-selector button {
+    font-weight: normal; /* 일정 추가 버튼 글씨를 일반으로 설정 */
+    font-size: 1rem; /* 버튼 폰트 크기 증가 (text-xl) */
+}
+
+
+.card {
+    overflow: hidden; /* 내용이 넘칠 경우 숨김 처리 */
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 쌓이게 */
+    justify-content: space-between; /* 내용이 위쪽과 아래쪽에 고르게 배치 */
+  }
