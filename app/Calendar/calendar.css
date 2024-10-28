@@ -1,30 +1,17 @@
 .calendar-container {
-    max-height: 600px; /* 기본 높이 */
-    overflow-y: auto;
-    transition: max-height 0.3s ease-in-out;
-  }
-
-.calendar-container.expanded {
-    max-height: 100%; /* 확장될 때 높이 제한 해제 */
-}
-
-.divider {
-    transition: transform 0.3s ease-in-out;
-  }
-  
-.calendar-container.expanded .divider {
-    transform: translateY(-20px); /* 경계선 위로 이동 */
+    text-align: center; /* 제목을 가운데 정렬 */
   }
 
 h2 {
     font-size: 24px;
-    font-weight: bolder; /* 제목 글씨를 더 진하게 설정 */
+    font-weight: bold; /* 제목 글씨를 더 진하게 설정 */
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 .month-display {
     font-size: 20px;
-    font-weight: bolder; /* 월 표시 글씨를 더 진하게 설정 */
+    font-weight: bold; /* 월 표시 글씨를 더 진하게 설정 */
     margin-bottom: 5px;
 }
 
@@ -58,7 +45,7 @@ h2 {
 
 /* 요일 글씨 색상 설정 */
 .react-calendar__month-view__weekdays__weekday {
-    color: gray; /* 요일 글씨 색상 회색 */
+    color: rgb(168, 168, 168); /* 요일 글씨 색상 회색 */
 }
 
 .react-calendar__tile {
@@ -66,15 +53,20 @@ h2 {
     font-size: 1rem; /* 글씨 크기 증가 (1.5rem) */
 }
 
-.custom-date-selector {
-    margin-left: 20px; /* 왼쪽 마진 추가 */
-}
-
+.custom-date-selector 
 .custom-date-selector select {
-    font-weight: bold; /* 드롭다운 글씨를 진하게 설정 */
-    font-size: 1.25rem; /* 폰트 크기 증가 (text-xl) */
-    padding: 10px; /* 패딩 추가 */
-    margin-right: 10px; /* 드롭다운 간의 간격 */
+    content: '';
+    position: absolute;
+    display: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background: #3688ff;
+    color: white;
+    border-radius: 50%;
+    align-content: center;
 }
 
 .custom-date-selector button {

@@ -19,6 +19,10 @@ function Calendar() {
   return <h2>캘린더 페이지</h2>;
 }
 
+function Calendar_week(){
+  return <h2>캘린더(주간) 페이지</h2>;
+}
+
 function StudyPlanner() {
   return <h2>스터디 플래너 페이지</h2>;
 }

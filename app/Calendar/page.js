@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Calendar as ReactCalendar } from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './calendar.css'; // 캘린더 커스텀 CSS
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Calendar() {
   const [date, setDate] = useState(new Date()); // 선택된 날짜
@@ -15,8 +17,9 @@ export default function Calendar() {
   const [isDDay, setIsDDay] = useState(false); // D-DAY 상태
   const [editingIndex, setEditingIndex] = useState(null); // 수정할 일정의 인덱스
   const [visibleEventsCount, setVisibleEventsCount] = useState(4); // 보여줄 일정 개수 상태
-
-
+  const [showAlert, setShowAlert] = useState(false); // 알림 상태
+  const sortedEvents = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
+  
   const today = new Date(); // 오늘 날짜
 
   const handleDateChange = (newDate) => {
@@ -51,15 +54,16 @@ export default function Calendar() {
     
     // 로컬 스토리지에 저장
     localStorage.setItem('events', JSON.stringify(newEvents));
-    
-      // visibleEventsCount를 늘려서 즉시 더보기 버튼이 나타나게 함
-      if (newEvents.length > visibleEventsCount) {
-        setVisibleEventsCount(prevCount => prevCount + 1);
-      }
+    console.log('저장된 날짜:', selectedDate.toISOString()); // 로그 추가
 
-      resetForm();
-      document.getElementById('my_modal_3').close(); // 모달 닫기
-    };
+    // visibleEventsCount를 늘려서 즉시 더보기 버튼이 나타나게 함
+    if (newEvents.length > visibleEventsCount) {
+      setVisibleEventsCount(prevCount => prevCount + 1);
+    }
+
+    resetForm();
+    document.getElementById('my_modal_3').close(); // 모달 닫기
+  };
   
   useEffect(() => {
     const savedEvents = localStorage.getItem('events');
@@ -74,7 +78,6 @@ export default function Calendar() {
       document.querySelector('.calendar-container').classList.add('expanded'); // 모든 이벤트가 표시되면 확장
     }
   };
-
 
   const resetForm = () => {
     setTitle(''); // 제목 초기화
@@ -92,6 +95,7 @@ export default function Calendar() {
   const years = Array.from({ length: 50 }, (_, i) => selectedYear - 25 + i);
   const months = Array.from({ length: 12 }, (_, i) => i);
 
+  // 일정 삭제 함수
   const handleDeleteEvent = (index) => {
     const newEvents = events.filter((_, i) => i !== index);
     setEvents(newEvents);
@@ -129,25 +133,66 @@ export default function Calendar() {
     document.getElementById('edit_modal').close(); // 수정 모달 닫기
   };
 
+  const handleDateClick = (value) => {
+    // 클릭한 날짜를 로컬 스토리지에 저장
+    localStorage.setItem('selectedDate', value.toISOString());
+
+    const eventsForDate = events.filter(event => {
+      const eventDate = new Date(event.date);
+      return eventDate.toDateString() === value.toDateString();
+    });
+    
+    if (eventsForDate.length > 0) {
+      // 일정이 있을 경우 페이지 이동
+      window.location.href = `/Calendar_week?date=${value.toISOString()}`; // 일정이 있을 경우 페이지 이동
+    } else {
+      // 일정이 없을 경우 알림 표시
+      setShowAlert(true);
+      setTimeout(() => setShowAlert(false), 2000); // 2초 후 알림 숨기기
+    }
+  };
 
   return (
-    <div className="calendar-container">
+    <div className="calendar-container" style={{ textAlign: 'center' }}>
       <h2>나의 캘린더</h2>
+
+      {showAlert && (
+        <div role="alert" className="alert alert-error text-white" style={{
+            position: 'absolute',
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1000,
+        }}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>선택한 날짜에 일정이 없습니다.</span>
+        </div>
+      )}
 
       <div className="custom-date-selector flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <select value={selectedYear} onChange={handleYearChange} className="font-bold text-xl p-2 mr-2">
+          <select value={selectedYear} onChange={handleYearChange} className="font-bold text-xl p-2 ml-8 mr-4">
             {years.map(year => (
               <option key={year} value={year}>{year}년</option>
             ))}
           </select>
-          <select value={selectedMonth} onChange={handleMonthChange} className="font-bold text-xl p-2">
+          <select value={selectedMonth} onChange={handleMonthChange} className="font-bold text-xl mr-4 p-2">
             {months.map(month => (
               <option key={month} value={month}>{month + 1}월</option>
             ))}
           </select>
         </div>
-        <button className="btn btn-sm mr-4" onClick={() => document.getElementById('my_modal_3').showModal()}>
+        <button className="btn btn-sm mr-12" onClick={() => document.getElementById('my_modal_3').showModal()}>
           일정 추가
         </button>
       </div>
@@ -163,30 +208,31 @@ export default function Calendar() {
           return isToday ? 'react-calendar__tile--now' : (isSelectedDate ? 'react-calendar__tile--selected' : '');
         }}
         activeStartDate={new Date(selectedYear, selectedMonth)}
+        onClickDay={handleDateClick}
       />
 
       <div className="divider" style={{ width: '100%' }}></div>
 
-      {/* 등록된 일정 카드들 */}
-      {events.slice(0, visibleEventsCount).map((event, index) => (
+            {/* 등록된 일정 카드들 */}
+            {sortedEvents.slice(0, visibleEventsCount).map((event, index) => (
         <div 
             key={index} 
-            className="card bg-base-300 rounded-box my-2" 
+            className="card bg-base-300 rounded-box my-4" 
             onClick={() => openEditModal(index)} // 클릭 시 수정 모달 열기
         >
-            <div className="flex justify-between w-full">
+          <div className="flex justify-between w-full">
             <div className="flex-1 text-left">
-                <div style={{ fontWeight: 'bold' }}>{event.title}</div>
-                <div style={{ fontWeight: 'normal' }} dangerouslySetInnerHTML={{ __html: event.memo.replace(/\n/g, '<br />') }}></div>
+              <div style={{ fontWeight: 'bold' }}>{event.title}</div>
+              <div style={{ fontWeight: 'normal' }} dangerouslySetInnerHTML={{ __html: event.memo.replace(/\n/g, '<br />') }}></div>
             </div>
             <div className="flex items-center ml-2">
-                {event.isDDay && (
+              {event.isDDay && (
                 <div className="font-bold mr-2">
-                    D{event.dDayCount >= 0 ? `-${event.dDayCount}` : `+${Math.abs(event.dDayCount)}`}
+                  D{event.dDayCount >= 0 ? `-${event.dDayCount}` : `+${Math.abs(event.dDayCount)}`}
                 </div>
-                )}
+              )}
             </div>
-            </div>
+          </div>
         </div>
       ))}
 
@@ -273,8 +319,8 @@ export default function Calendar() {
               </label>
             </div>
             <div className="modal-action">
-              <button className="btn" onClick={handleEditEvent}>수정하기</button>
-              <button className="btn btn-error" onClick={() => handleDeleteEvent(editingIndex)}>삭제하기</button>
+              <button className="btn btn-info text-white" onClick={handleEditEvent}>수정하기</button>
+              <button className="btn btn-error text-white" onClick={() => handleDeleteEvent(editingIndex)}>삭제하기</button>
             </div>
           </form>
         </div>
