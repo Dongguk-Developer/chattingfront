@@ -9,6 +9,9 @@ export default function Page() {
         <Link href="/chat">
           <button className="btn btn-primary">Go to Chat</button>
         </Link>
+        <Link href="/studyplanner">
+        <button className="btn btn-primary">Go to planner</button>
+        </Link>
       </div>
     </div>
   );
