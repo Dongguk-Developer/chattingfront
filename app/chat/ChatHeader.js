@@ -73,7 +73,7 @@ const ChatHeader = () => {
       {isBannerOpen && (
         <div
           className="absolute top-0 right-0 w-64 bg-gray-200 transform transition-transform duration-300 z-50 flex flex-col justify-between"
-          style={{ height: 'calc(100vh - 255px)' }}
+          style={{ height: 'calc(100vh)' }}
         >
           <div className="flex flex-col items-center p-4 mt-6">
             {/* 프사 */}
