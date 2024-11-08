@@ -129,7 +129,7 @@ export default function FirstPage() {
                 <div
                     id="profile-picture"
                     className="mask mask-circle cursor-pointer bg-base-300 relative" // 색상 변경
-                    style={{ width: '90px', height: '90px', objectFit: 'cover' }}
+                    style={{ width: '130px', height: '130px', objectFit: 'cover' }}
                     onClick={handleProfilePictureClick}
                 >
                     {profilePicture ? (
@@ -137,7 +137,7 @@ export default function FirstPage() {
                             src={profilePicture} 
                             alt="프로필 사진" 
                             className="mask mask-circle" 
-                            style={{ width: '90px', height: '90px', objectFit: 'cover' }} 
+                            style={{ width: '130px', height: '130px', objectFit: 'cover' }} 
                         />
                     ) : (
                         <div className="absolute inset-0 flex items-center justify-center text-base-content text-xs bg-base-300">
@@ -162,7 +162,7 @@ export default function FirstPage() {
                     <input  
                             type="text"
                             placeholder="이름"
-                            className="input input-sm w-full bg-base-300 text-base-content font-sans text-[0.65rem]" 
+                            className="input input-sm bg-base-300 text-base-content font-sans text-[0.65rem]" 
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
