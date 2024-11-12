@@ -80,16 +80,17 @@ function Calendar_week() {
     };
 
     return (
-        <div className="bg-base-100 min-h-screen font-sans" style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <div className="bg-base-100 min-h-screen font-sans" style={{ textAlign: 'center', marginBottom: '20px', marginTop: '20px'}}>
             <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>나의 캘린더</h1>
             <div className="custom-date-selector flex justify-end mb-4">
-                <button className="btn btn-sm bg-base-300 mr-12" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                <button className="btn btn-sm bg-base-300 mr-12 mt-12" onClick={() => document.getElementById('my_modal_3').showModal()}>
                     일정 추가
                 </button>
             </div>
             <DatePicker
                 getSelectedDay={selectedDay}
                 endDate={100}
+                style={{marginTop: '20px'}}
                 selectDate={date}
                 labelFormat={"MMMM"}
                 color={"#3b82f6"}          
