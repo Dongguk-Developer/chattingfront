@@ -91,7 +91,7 @@ const ChatPage = () => {
                     <input
                         type="text"
                         placeholder="Type here"
-                        className="input input-bordered w-full max-w-xs"
+                        className="input input-bordered w-full "
                     />
 
                     {/* 오른쪽 버튼 */}
