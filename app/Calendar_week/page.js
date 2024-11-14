@@ -80,7 +80,7 @@ function Calendar_week() {
     };
 
     return (
-        <div className="bg-base-100 min-h-screen font-sans" style={{ textAlign: 'center', marginBottom: '20px', marginTop: '20px'}}>
+        <div className="bg-base-100 min-h-screen font-sans" style={{ textAlign: 'center', marginBottom: '20px', marginTop: '30px'}}>    {/* 나의 캘린더 마진설정 */}
             <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>나의 캘린더</h1>
             <div className="custom-date-selector flex justify-end mb-4">
                 <button className="btn btn-sm bg-base-300 mr-12 mt-12" onClick={() => document.getElementById('my_modal_3').showModal()}>
@@ -96,25 +96,30 @@ function Calendar_week() {
                 color={"#3b82f6"}          
             />
             {/* 등록된 일정 카드들 */}
-            {filteredEvents.map((event) => (
-                <div 
-                    key={event.id} 
-                    className="card bg-base-300 rounded-box my-8" 
-                    onClick={() => openEditModal(event)} // 클릭 시 수정 모달 열기
-                >
-                    <div className="flex justify-between w-full p-4">
-                        <div className="text-left">
-                            <div style={{ fontWeight: 'bold' }}>{event.title}</div>
-                            <div dangerouslySetInnerHTML={{ __html: event.memo.replace(/\n/g, '<br />') }}></div>
-                        </div>
-                        {event.isDDay && (
-                            <div className="font-bold text-center">
-                                D{event.dDayCount >= 0 ? `-${event.dDayCount}` : `+${Math.abs(event.dDayCount)}`}
+            {/* 등록된 일정이 없는 경우 */}
+            {filteredEvents.length === 0 ? (
+                    <div className="text-base-content mt-8">등록된 일정이 없습니다.</div>
+                    ) : (
+                        filteredEvents.map((event) => (
+                            <div 
+                                key={event.id} 
+                                className="card bg-base-300 rounded-box my-8" 
+                                onClick={() => openEditModal(event)} // 클릭 시 수정 모달 열기
+                            >
+                                <div className="flex justify-between w-full p-4">
+                                    <div className="text-left">
+                                        <div style={{ fontWeight: 'bold' }}>{event.title}</div>
+                                        <div dangerouslySetInnerHTML={{ __html: event.memo.replace(/\n/g, '<br />') }}></div>
+                                    </div>
+                                    {event.isDDay && (
+                                        <div className="font-bold text-center">
+                                            D{event.dDayCount >= 0 ? `-${event.dDayCount}` : `+${Math.abs(event.dDayCount)}`}
+                                        </div>
+                                    )}
+                                </div>
                             </div>
-                        )}
-                    </div>
-                </div>
-            ))}
+                        ))
+                    )}
 
             {/* 일정 추가 모달 */}
             <dialog id="my_modal_3" className="modal">
