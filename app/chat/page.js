@@ -1,41 +1,48 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import ChatHeader from './ChatHeader';
-import ChatBubble from './ChatBubble';
+import React, { useState, useEffect } from "react";
+import ChatHeader from "./ChatHeader";
+import ChatBubble from "./ChatBubble";
 
 const ChatPage = () => {
-    // 초기 상태는 빈 배열
     const [messages, setMessages] = useState([]);
+    const [inputMessage, setInputMessage] = useState("");
     const [showButtons, setShowButtons] = useState(false);
 
-    // API에서 메시지를 가져오는 함수
     const fetchMessages = async () => {
         try {
-            const response = await fetch('http://118.35.67.185:8090/test', { method: 'post' });// FastAPI 서버의 메시지 엔드포인트
+            const response = await fetch("http://118.35.67.185:8090/test", { method: "post" });
             const data = await response.json();
-            console.log(data);
-            setMessages(data); // API에서 받아온 데이터를 상태에 저장
+            setMessages(data);
         } catch (error) {
             console.error("Failed to fetch messages:", error);
         }
     };
 
-    // 컴포넌트가 처음 렌더링될 때 메시지 가져오기
     useEffect(() => {
         fetchMessages();
     }, []);
 
     const toggleButtons = () => {
-        setShowButtons(!showButtons); // 버튼을 토글하는 함수
+        setShowButtons(!showButtons);
+    };
+
+    const handleSendMessage = () => {
+        if (inputMessage.trim()) {
+            const newMessage = {
+                message: inputMessage,
+                time: new Date().toLocaleTimeString(),
+                isUser: true, // 사용자 메시지임을 나타내는 속성 추가
+            };
+            setMessages([...messages, newMessage]);
+            setInputMessage("");
+        }
     };
 
     return (
-        <div className="flex flex-col items-center justify-center  bg-white">
-            <div className="  flex flex-col h-full w-full relative">
-                {/* Chat Header */}
+        <div className="flex flex-col items-center justify-center bg-white">
+            <div className="flex flex-col h-full w-full relative">
                 <ChatHeader />
 
-                {/* Chat Messages */}
                 <div className="chat-container flex-1 overflow-y-auto mt-0 p-4">
                     {messages.map((msg, index) => (
                         <ChatBubble
@@ -43,14 +50,12 @@ const ChatPage = () => {
                             sender={msg.sender}
                             message={msg.message}
                             time={msg.time}
-                            image={msg.image}
+                            isUser={msg.isUser}
                         />
                     ))}
                 </div>
 
-                {/* 입력창 영역 */}
                 <div className="chat-input flex items-center p-4 bg-white shadow-md">
-                    {/* 왼쪽 버튼 (토글) */}
                     <button className="btn btn-square btn-ghost" onClick={toggleButtons}>
                         {showButtons ? (
                             <svg
@@ -87,15 +92,18 @@ const ChatPage = () => {
                         )}
                     </button>
 
-                    {/* 입력창 */}
                     <input
                         type="text"
                         placeholder="Type here"
-                        className="input input-bordered w-full "
+                        value={inputMessage}
+                        onChange={(e) => setInputMessage(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") handleSendMessage();
+                        }}
+                        className="input input-bordered w-full"
                     />
 
-                    {/* 오른쪽 버튼 */}
-                    <button className="btn btn-square btn-ghost ml-2">
+                    <button className="btn btn-square btn-ghost ml-2" onClick={handleSendMessage}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="24"
@@ -113,7 +121,6 @@ const ChatPage = () => {
                     </button>
                 </div>
 
-                {/* 토글된 버튼들 */}
                 {showButtons && (
                     <div className="flex flex-col items-center space-y-2 p-4">
                         <button className="btn w-full">사진 / 동영상</button>
