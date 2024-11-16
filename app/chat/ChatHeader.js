@@ -31,6 +31,10 @@ const ChatHeader = () => {
     setIsExitModalOpen(false);
   };
 
+  const closeBanner = () => {
+    setBannerOpen(false);
+  };
+
   return (
     <div className="navbar bg-base-100 relative">
       <div className="flex-none">
@@ -147,7 +151,7 @@ const ChatHeader = () => {
 
             {/* 나가기 모달 */}
             <li>
-              <button onClick={openExitModal}>
+              <button onClick={closeBanner}>
                 <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M10.6667 18.3334C15.2691 18.3334 19 14.6024 19 10C19 5.39765 15.2691 1.66669 10.6667 1.66669C6.06432 1.66669 2.33336 5.39765 2.33336 10C2.33336 14.6024 6.06432 18.3334 10.6667 18.3334Z" fill="black" stroke="black" strokeWidth="2" strokeLinejoin="round" />
                   <path d="M13.0236 7.64301L8.3096 12.357" stroke="#EDEDED" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -161,17 +165,17 @@ const ChatHeader = () => {
           {isReportModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <div className="bg-white p-4 rounded-md w-80">
-                <h2 className="text-lg font-bold mb-2">채팅방 신고하기</h2>
-                <p className="mb-4">채팅방을 신고하시겠습니까?</p>
+                <h2 className="text-lg font-bold mb-2">채팅방 나가기</h2>
+                <p className="mb-4">채팅방을 나가시겠습니까?</p>
                 <div className="flex justify-end">
                   <button className="btn mr-2" onClick={closeModal}>취소</button>
-                  <button className="btn btn-error" onClick={closeModal}>신고하기</button>
+                  <button className="btn btn-error" onClick={closeModal}>나가기</button>
                 </div>
               </div>
             </div>
           )}
 
-          {isExitModalOpen && (
+          {/* {isExitModalOpen && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
               <div className="bg-white p-4 rounded-md w-80">
                 <h2 className="text-lg font-bold mb-2">채팅방 나가기</h2>
@@ -182,7 +186,7 @@ const ChatHeader = () => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>

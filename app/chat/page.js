@@ -7,6 +7,9 @@ const ChatPage = () => {
     const [messages, setMessages] = useState([]);
     const [inputMessage, setInputMessage] = useState("");
     const [showButtons, setShowButtons] = useState(false);
+    const [isDateModalOpen, setDateModalOpen] = useState(false);
+    const [selectedDate, setSelectedDate] = useState("");
+    const [fetchType, setFetchType] = useState(""); // 플래너 또는 캘린더 구분용
 
     const fetchMessages = async () => {
         try {
@@ -31,10 +34,69 @@ const ChatPage = () => {
             const newMessage = {
                 message: inputMessage,
                 time: new Date().toLocaleTimeString(),
-                isUser: true, // 사용자 메시지임을 나타내는 속성 추가
+                isUser: true,
             };
             setMessages([...messages, newMessage]);
             setInputMessage("");
+        }
+    };
+
+    // 모달 열기 (플래너 또는 캘린더 버튼 클릭 시 호출)
+    const openDateModal = (type) => {
+        setFetchType(type);
+        setDateModalOpen(true);
+    };
+
+    // 날짜 선택 후 데이터 가져오기
+    const fetchDataByDate = async () => {
+        const url = fetchType === "planner"
+            ? `http://118.35.67.185:8090/planner?date=${selectedDate}`
+            : `http://118.35.67.185:8090/calendar?date=${selectedDate}`;
+
+        try {
+            const response = await fetch(url, { method: "GET" });
+            const data = await response.json();
+
+            const messageContent =
+                fetchType === "planner"
+                    ? `플래너 공유 - 날짜: ${data.date}, 제목: ${data.title}, 내용: ${data.content}`
+                    : `캘린더 공유 - 날짜: ${data.date}, 제목: ${data.title}, 내용: ${data.content}`;
+
+            setMessages([...messages, { message: messageContent, time: new Date().toLocaleTimeString(), isUser: true }]);
+            setDateModalOpen(false); // 모달 닫기
+            setSelectedDate(""); // 날짜 초기화
+        } catch (error) {
+            console.error("Failed to fetch data:", error);
+        }
+    };
+
+    // 파일 선택 및 업로드 함수
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch("http://your-server-url/upload", { // 파일 업로드 API URL 변경
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const newMessage = {
+                        message: `사진/동영상 공유: ${data.fileName}`,
+                        time: new Date().toLocaleTimeString(),
+                        isUser: true,
+                    };
+                    setMessages([...messages, newMessage]);
+                } else {
+                    console.error("Failed to upload file");
+                }
+            } catch (error) {
+                console.error("Error uploading file:", error);
+            }
         }
     };
 
@@ -123,9 +185,47 @@ const ChatPage = () => {
 
                 {showButtons && (
                     <div className="flex flex-col items-center space-y-2 p-4">
-                        <button className="btn w-full">사진 / 동영상</button>
-                        <button className="btn w-full">플래너</button>
-                        <button className="btn w-full">캘린더</button>
+                        <button className="btn w-full" onClick={() => openDateModal("planner")}>
+                            플래너 공유
+                        </button>
+                        <button className="btn w-full" onClick={() => openDateModal("calendar")}>
+                            캘린더 공유
+                        </button>
+                        <button className="btn w-full">
+                            <label htmlFor="file-upload" className="cursor-pointer">
+                                사진 / 동영상
+                            </label>
+                        </button>
+                        <input
+                            type="file"
+                            id="file-upload"
+                            accept="image/*,video/*"
+                            onChange={handleFileChange}
+                            className="hidden"
+                        />
+                    </div>
+                )}
+
+                {/* 날짜 선택 모달 */}
+                {isDateModalOpen && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                        <div className="bg-white p-4 rounded-md w-80">
+                            <h2 className="text-lg font-bold mb-2">날짜 선택</h2>
+                            <input
+                                type="date"
+                                value={selectedDate}
+                                onChange={(e) => setSelectedDate(e.target.value)}
+                                className="input input-bordered w-full mb-4"
+                            />
+                            <div className="flex justify-end">
+                                <button className="btn mr-2" onClick={() => setDateModalOpen(false)}>
+                                    취소
+                                </button>
+                                <button className="btn btn-primary" onClick={fetchDataByDate}>
+                                    확인
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
             </div>
