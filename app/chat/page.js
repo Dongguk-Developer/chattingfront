@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import ChatHeader from "./ChatHeader";
 import ChatBubble from "./ChatBubble";
+import URLPreview from "./URLPreview"; // URL 미리보기 컴포넌트 추가
 
 const ChatPage = () => {
     const [messages, setMessages] = useState([]);
@@ -10,6 +11,18 @@ const ChatPage = () => {
     const [isDateModalOpen, setDateModalOpen] = useState(false);
     const [selectedDate, setSelectedDate] = useState("");
     const [fetchType, setFetchType] = useState(""); // 플래너 또는 캘린더 구분용
+    const [previewData, setPreviewData] = useState(null); // URL 미리보기 데이터 저장
+
+    // LinkPreview API를 통해 URL 미리보기 데이터 가져오기
+    const fetchPreviewData = async (url) => {
+        try {
+            const response = await fetch(`https://api.linkpreview.net/?key=f7cef8beb9f03366507f1d93e225ece7&q=${url}`);
+            const data = await response.json();
+            setPreviewData(data); // 미리보기 데이터 저장
+        } catch (error) {
+            console.error("Failed to fetch preview data:", error);
+        }
+    };
 
     const fetchMessages = async () => {
         try {
@@ -31,6 +44,13 @@ const ChatPage = () => {
 
     const handleSendMessage = () => {
         if (inputMessage.trim()) {
+            const urlMatch = inputMessage.match(/(https?:\/\/[^\s]+)/); // 메시지에서 URL 추출
+            setPreviewData(null); // 새로운 메시지 입력 시 이전 미리보기 데이터 초기화
+
+            if (urlMatch) {
+                fetchPreviewData(urlMatch[0]); // URL 미리보기 데이터 가져오기
+            }
+            
             const newMessage = {
                 message: inputMessage,
                 time: new Date().toLocaleTimeString(),
@@ -41,13 +61,11 @@ const ChatPage = () => {
         }
     };
 
-    // 모달 열기 (플래너 또는 캘린더 버튼 클릭 시 호출)
     const openDateModal = (type) => {
         setFetchType(type);
         setDateModalOpen(true);
     };
 
-    // 날짜 선택 후 데이터 가져오기
     const fetchDataByDate = async () => {
         const url = fetchType === "planner"
             ? `http://118.35.67.185:8090/planner?date=${selectedDate}`
@@ -63,14 +81,13 @@ const ChatPage = () => {
                     : `캘린더 공유 - 날짜: ${data.date}, 제목: ${data.title}, 내용: ${data.content}`;
 
             setMessages([...messages, { message: messageContent, time: new Date().toLocaleTimeString(), isUser: true }]);
-            setDateModalOpen(false); // 모달 닫기
-            setSelectedDate(""); // 날짜 초기화
+            setDateModalOpen(false); 
+            setSelectedDate(""); 
         } catch (error) {
             console.error("Failed to fetch data:", error);
         }
     };
 
-    // 파일 선택 및 업로드 함수
     const handleFileChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -78,7 +95,7 @@ const ChatPage = () => {
             formData.append("file", file);
 
             try {
-                const response = await fetch("http://your-server-url/upload", { // 파일 업로드 API URL 변경
+                const response = await fetch("http://your-server-url/upload", {
                     method: "POST",
                     body: formData,
                 });
@@ -107,47 +124,30 @@ const ChatPage = () => {
 
                 <div className="chat-container flex-1 overflow-y-auto mt-0 p-4">
                     {messages.map((msg, index) => (
-                        <ChatBubble
-                            key={index}
-                            sender={msg.sender}
-                            message={msg.message}
-                            time={msg.time}
-                            isUser={msg.isUser}
-                        />
+                        <React.Fragment key={index}>
+                            <ChatBubble
+                                sender={msg.sender}
+                                message={msg.message}
+                                time={msg.time}
+                                isUser={msg.isUser}
+                            />
+                            {previewData && msg && msg.message && msg.message.includes(previewData.url) && (
+    <URLPreview data={previewData} />
+)}
+
+                        </React.Fragment>
                     ))}
                 </div>
 
                 <div className="chat-input flex items-center p-4 bg-white shadow-md">
                     <button className="btn btn-square btn-ghost" onClick={toggleButtons}>
                         {showButtons ? (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="feather feather-x"
-                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-x">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
                         ) : (
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="24"
-                                height="24"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                className="feather feather-plus"
-                            >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-plus">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
@@ -166,18 +166,7 @@ const ChatPage = () => {
                     />
 
                     <button className="btn btn-square btn-ghost ml-2" onClick={handleSendMessage}>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="feather feather-chevron-up"
-                        >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-chevron-up">
                             <polyline points="18 15 12 9 6 15"></polyline>
                         </svg>
                     </button>
@@ -206,7 +195,6 @@ const ChatPage = () => {
                     </div>
                 )}
 
-                {/* 날짜 선택 모달 */}
                 {isDateModalOpen && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                         <div className="bg-white p-4 rounded-md w-80">
