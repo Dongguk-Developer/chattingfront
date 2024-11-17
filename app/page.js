@@ -3,10 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import LoginChecker from "./LoginChecker";
 import { useState,useRef,useEffect } from "react";
-import axios from "axios";
 import { CURRENT_BACKEND } from "./res/path.js";
 import {CalendarIcon,HomeIcon,PlannerIcon} from "./components/icons.js"
-axios.defaults.withCredentials = true;
 const HelloUser = ({user})=>{
   const userRef = useRef(user); 
   const [profilePicture, setProfilePicture] = useState(null);
