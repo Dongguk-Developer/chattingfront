@@ -1,0 +1,37 @@
+
+/* login.css */
+body {
+    background-color: white; /* 흰색 배경 */
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.artboard {
+    background-color: white; /* 아트보드의 배경색 흰색 */
+    border-radius: 16px; /* 모서리를 둥글게 설정 */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+} 
+
+@font-face {
+    font-family: 'Pretendard-ExtraBold';
+    src: url('/fonts/Pretendard-ExtraBold.woff') format('woff');
+    font-weight: bold; 
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'NotoSansKR-Regular';
+    src: url('/fonts/NotoSansKR-Regular.ttf') format('ttf');
+    font-weight: normal; 
+    font-style: normal;
+}
+
+
+.studytitle {
+    color: #3B82F6;
+    font-family: 'Pretendard-ExtraBold';
+}
