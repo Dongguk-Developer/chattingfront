@@ -1,6 +1,7 @@
 "use client"; // 클라이언트 컴포넌트로 지정
 import { useEffect, useState } from "react";
 import {CURRENT_BACKEND} from "./res/path";
+//                                                        3000
 const LoginChecker = ({ children, setUserData }) => {
   const [user, setUser] = useState(null);
   const checkLogin = async () => {
@@ -14,7 +15,6 @@ const LoginChecker = ({ children, setUserData }) => {
       }
 
       const data = await response.json(); // JSON 형식으로 변환
-      console.log(data);
       setUser(data); // 유저 정보 설정
       setUserData(data); // 부모 컴포넌트에서 받은 setUserData 함수 호출
 

@@ -1,36 +1,78 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import OpenModal from "./client.js";
-import LoginCheck from "./LoginChecker";
+import LoginChecker from "./LoginChecker";
 import { useState,useRef,useEffect } from "react";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
-import { Cookies } from 'react-cookie';
-
+import { CURRENT_BACKEND } from "./res/path.js";
+import {CalendarIcon,HomeIcon,PlannerIcon} from "./components/icons.js"
 axios.defaults.withCredentials = true;
 const HelloUser = ({user})=>{
-  console.log(user);
   const userRef = useRef(user); 
   const [profilePicture, setProfilePicture] = useState(null);
+  const [title,set_title] = useState("");
+  const [hashtag,set_hashtag] = useState("");
+
+  const CreateChatRoom = () => {document.getElementById("create").showModal()};
+  const Create_And_Join = () => {
+    
+    const response = fetch(`${CURRENT_BACKEND}/chatroom/create`, {
+      method: "POST",
+      body: JSON.stringify({
+        title: title,
+        hashtag: hashtag
+      }),
+      credentials: "include"
+    }).then(async(res)=>{
+      let response = await res.json();
+      console.log(response)
+      console.log(res.status);
+      if(res.status==200){
+        location.href="/chat?room_code="+response['room_id'];
+      }
+    })
+  }
+
 
   useEffect(() => {
     userRef.current = user; // user가 변경될 때마다 userRef를 업데이트
-    console.log(user)
   }, [user]);
   useEffect(()=>{
-    if(user&&user.profile_image!==null){
-      setProfilePicture(user.profile_image)
+    console.log(user);
+    if(user&&user.profile_image.profile_image_url!==null){
+      setProfilePicture(user.profile_image.profile_image_url)
     }
   },[user])
+
   return (
   <header className="flex justify-between items-center px-4 py-4">
     <div className="font-black">
-      <span className="text-xs"><p className="inline">{user ? `${user.user_nickname}` : "Loading..."}</p><p className="text-[rgb(128,128,128)]" style={{display:"inline",margin:"0"}}>님</p></span>
+      <span className="text-xs"><p className="inline">{user ? `${user.user.user_nickname}` : "Loading..."}</p><p className="text-[rgb(128,128,128)]" style={{display:"inline",margin:"0"}}>님</p></span>
       <p>안녕하세요!</p>
     </div>
     <div className="flex items-center">
 
+    
+    
+    <dialog id="create" className="modal">
+        <div className="modal-box w-72">
+          <div className="flex flex-col gap-3">
+            <h3 className="font-bold text-lg">채팅방 생성하기</h3>
+            <div className="py-0 my-0 px-0">
+              <form method="dialog">
+                <div className="flex flex-col gap-2">
+                  <input className="bg-[rgb(229,229,229)] mr-2 rounded-md p-2" placeholder="채팅방 제목을 입력해주세요" onChange={(event) => {set_title(event.target.value);}} value={title}/>
+                  <input className="bg-[rgb(229,229,229)] mr-2 rounded-md p-2" placeholder="해시태그를 입력해주세요" onChange={(event) => {set_hashtag(event.target.value);}} value={hashtag}/>
+                  <div className="flex flex-row gap-2">
+                    <button className="btn bg-[rgb(59,130,246)] text-white" onClick={Create_And_Join}>생성 및 입장하기</button>
+                    <button className="btn bg-[rgb(229,229,229)] px-7">취소</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </dialog>
     <svg
       width={24}
       height={24}
@@ -38,51 +80,7 @@ const HelloUser = ({user})=>{
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{marginRight:"3px",marginLeft:"3px"}}
-    >
-      <path
-        d="M10.5 19C15.1944 19 19 15.1944 19 10.5C19 5.8056 15.1944 2 10.5 2C5.8056 2 2 5.8056 2 10.5C2 15.1944 5.8056 19 10.5 19Z"
-        fill="black"
-        stroke="black"
-        style={{
-          fill: "black",
-          fillOpacity: 1,
-          stroke: "black",
-          strokeOpacity: 1,
-        }}
-        strokeWidth={2}
-        strokeLinejoin="round"
-      />
-      <path
-        d="M13.3285 7.17155C12.6046 6.4477 11.6046 6 10.5 6C9.39548 6 8.39548 6.4477 7.67163 7.17155"
-        stroke="white"
-        style={{
-          stroke: "white",
-          strokeOpacity: 1,
-        }}
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M16.6108 16.6108L20.8535 20.8535"
-        stroke="black"
-        style={{
-          stroke: "black",
-          strokeOpacity: 1,
-        }}
-        strokeWidth={2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-
-    <svg
-      width={24}
-      height={24}
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{marginRight:"3px",marginLeft:"3px"}}
+      onClick={CreateChatRoom}
     >
       <path
         d="M12.0303 5L12.012 19"
@@ -125,28 +123,39 @@ const HelloUser = ({user})=>{
 
 
 
-// api로 가져와야 하는 데이터
-  const ChatRoom_list = [
-      {"title":"방 제목 1","hashtags":["1","2","3"],"room_code":"1a4ebc32d"},
-      {"title":"방 제목 2","hashtags":["2","3","4"],"room_code":"caddbc32d"},
-      {"title":"방 제목 3","hashtags":["3","4","5"],"room_code":"1dffeac2d"},
-      {"title":"방 제목 4","hashtags":["4","5","6"],"room_code":"1deedbc3d"},
-      {"title":"방 제목 5","hashtags":["5","6","7"],"room_code":"a4effc32d"}
-  ];
-  const ChatRoom_Ranking_list = [
-      {"title":"방 제목 1","hashtags":["1","2","3"],"room_code":"1a4ebc32d"},
-      {"title":"방 제목 2","hashtags":["2","3","4"],"room_code":"caddbc32d"},
-      {"title":"방 제목 3","hashtags":["3","4","5"],"room_code":"1dffeac2d"}
-  ];
+  
   const ChatRooms = ()=>{
+    const [ChatRoom_list,Set_ChatRoom_list] = useState([]);
+    
+    const get_chatrooms = async () => {
+      try {
+        const response = await fetch(`${CURRENT_BACKEND}/chatroom/get/all`, {
+          method: "POST",
+          credentials: "include", // 쿠키를 포함해서 요청
+        });
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+    
+        const data = await response.json(); // JSON 형식으로 변환
+        console.log(data)
+        Set_ChatRoom_list(data)
+      
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+    useEffect(()=>{
+      get_chatrooms();
+    },[])
     return (
       <div className="mb-8">
     <h2 className="text-lg font-semibold mb-2">나의 채팅방</h2>
     <div className="flex flex-col space-y-3 bg-[rgb(237,237,237)] p-2 rounded-lg shadow-md">
       {/* 채팅방 목록 */}
-      
-      {ChatRoom_list.map((chatroom,index)=>{
-          return (<div key={index}><div className="flex items-center p-2 rounded-lg bg-[rgb(217,217,217)] shadow" onClick={()=>document.getElementById(chatroom.room_code).showModal()}>
+      {ChatRoom_list.length==0?<div className="flex justify-center py-6"><div>
+        현재 채팅방이 없습니다 새로 만들거나 참여해보세요</div></div>:ChatRoom_list.map((chatroom,index)=>{
+          return (<div key={index}><div className="flex items-center p-2 rounded-lg bg-[rgb(217,217,217)] shadow" onClick={()=>document.getElementById(chatroom.room_id).showModal()}>
           <div className="w-8 h-8 bg-red-500 rounded-full mr-4"></div>
           <div className="flex-1">
             <p className="text-sm font-bold">{chatroom.title}</p>
@@ -155,7 +164,7 @@ const HelloUser = ({user})=>{
             ))}
           </div>
         </div>
-        <dialog id={chatroom.room_code} className="modal">
+        <dialog id={chatroom.room_id} className="modal">
             <div className="modal-box w-72">
                 <h3 className="font-bold text-lg">채팅방 입장하기</h3>
                 <p className="py-4">{chatroom.title} 방에 입장하시겠어요?</p>
@@ -163,276 +172,146 @@ const HelloUser = ({user})=>{
                 <form method="dialog">
                     {/* if there is a button in form, it will close the modal */}
                     <button className="btn bg-[rgb(229,229,229)] mr-2">취소</button>
-                    <button className="btn bg-[rgb(59,130,246)] text-white">입장하기</button>
+                    <button className="btn bg-[rgb(59,130,246)] text-white" onClick={()=>{location.href=`/chat?room_code=${chatroom.room_id}`}}>입장하기</button>
                 </form>
                 </div>
             </div>
         </dialog></div>);
       })}
+      
 
     </div>
   </div>);
 }
 const ChatRoomRanking = ()=>{
+  const [ChatRoom_Ranking_list,Set_ChatRoom_Ranking_list] = useState([]);
+  const get_chatrooms = async () => {
+    try {
+      const response = await fetch(`${CURRENT_BACKEND}/ranking/get`, {
+        method: "POST",
+        credentials: "include", // 쿠키를 포함해서 요청
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      const data = await response.json(); // JSON 형식으로 변환
+      console.log(data);
+      Set_ChatRoom_Ranking_list(data)
+    
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  };
+  useEffect(()=>{
+    get_chatrooms();
+  },[])
   return (<div className="mb-8">
   <h2 className="text-lg font-semibold mb-2">오늘의 채팅방 랭킹</h2>
   <div className="flex flex-col space-y-3 bg-[rgb(237,237,237)] p-2 rounded-lg shadow-md">
-  {ChatRoom_Ranking_list.map((chatroom,index)=>{
-        return (<div key={index}><div className="flex items-center p-2 rounded-lg bg-[rgb(217,217,217)] shadow" onClick={()=>document.getElementById(chatroom.room_code).showModal()}>
+  {ChatRoom_Ranking_list.length==0?<div className="flex justify-center py-6"><div>
+        채팅방 랭킹 정보가 없습니다</div></div>:ChatRoom_Ranking_list.map((chatroom,index)=>{
+        return (<div key={index}><div className="flex items-center p-2 rounded-lg bg-[rgb(217,217,217)] shadow" onClick={()=>document.getElementById(chatroom.room_id).showModal()}>
         <div className="w-8 h-8 bg-red-500 rounded-full mr-4"></div>
         <div className="flex-1">
-          <p className="text-sm font-bold">{chatroom.title}</p>
+          <p className="text-sm font-bold">{chatroom.room_name}</p>
+          <p className="text-xs text-gray-900 inline mr-1 font-bold">#{chatroom.total_xp}<p className="text-xs text-gray-900 inline font-bold">xp</p></p>
           {chatroom.hashtags.map((tag, index2) => (
-            <p className="text-xs text-gray-500 inline" key={index2}>{tag} </p>
+            <p className="text-xs text-gray-500 inline font-bold" key={index2}>#{tag} </p>
           ))}
         </div>
       </div>
-      <dialog id={chatroom.room_code} className="modal">
-          <div className="modal-box w-72">
-              <h3 className="font-bold text-lg">채팅방 입장하기</h3>
-              <p className="py-4">{chatroom.title} 방에 입장하시겠어요?</p>
-              <div className="modal-action">
-              <form method="dialog">
-                  {/* if there is a button in form, it will close the modal */}
-                  <button className="btn bg-[rgb(229,229,229)] mr-2">취소</button>
-                  <button className="btn bg-[rgb(59,130,246)] text-white">입장하기</button>
-              </form>
-              </div>
-          </div>
-      </dialog></div>);
+      <dialog id={chatroom.room_id} className="modal">
+            <div className="modal-box w-72">
+                <h3 className="font-bold text-lg">채팅방 입장하기</h3>
+                <p className="py-4">{chatroom.title} 방에 입장하시겠어요?</p>
+                <div className="modal-action">
+                <form method="dialog">
+                    {/* if there is a button in form, it will close the modal */}
+                    <button className="btn bg-[rgb(229,229,229)] mr-2">취소</button>
+                    <button className="btn bg-[rgb(59,130,246)] text-white" onClick={()=>{location.href=`/chat?room_code=${chatroom.room_id}`}}>입장하기</button>
+                </form>
+                </div>
+            </div>
+        </dialog></div>);
     })}
   </div>
 </div>)
 }
-const PlannerIcon = ()=>{
-  return (<svg
-    width={20}
-    height={20}
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M1.66663 17.5H18.3333"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-    />
-    <path
-      d="M1.66663 17.5H18.3333"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M5.83337 11.6666H3.33337V17.5H5.83337V11.6666Z"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="round"
-    />
-    <path
-      d="M11.25 7.5H8.75V17.5H11.25V7.5Z"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="round"
-    />
-    <path
-      d="M16.6666 2.5H14.1666V17.5H16.6666V2.5Z"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="round"
-    />
-  </svg>)
-}
-const HomeIcon = ()=>{
-  return (<svg
-    width={20}
-    height={20}
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M3.75 7.5V17.5H16.25V7.5L10 2.5L3.75 7.5Z"
-      fill="#3B82F6"
-      stroke="#3B82F6"
-      style={{
-        fill: "#3B82F6",
-        fill: "color(display-p3 0.2314 0.5098 0.9647)",
-        fillOpacity: 1,
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M7.91663 12.0834V17.5H12.0833V12.0834H7.91663Z"
-      fill="white"
-      stroke="white"
-      style={{
-        fill: "white",
-        fillOpacity: 1,
-        stroke: "white",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="round"
-    />
-    <path
-      d="M3.75 17.5H16.25"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinecap="round"
-    />
-  </svg>)
-}
-const CalendarIcon = ()=>{
-  return (<svg
-    width={20}
-    height={20}
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M16.25 2.5H3.75C3.05964 2.5 2.5 3.05964 2.5 3.75V16.25C2.5 16.9404 3.05964 17.5 3.75 17.5H16.25C16.9404 17.5 17.5 16.9404 17.5 16.25V3.75C17.5 3.05964 16.9404 2.5 16.25 2.5Z"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="bevel"
-    />
-    <path
-      d="M2.5 9.16663H17.5"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="bevel"
-    />
-    <path
-      d="M12.0834 9.16667V2.5"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="bevel"
-    />
-    <path
-      d="M10.8334 2.5H13.3334"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="bevel"
-    />
-    <path
-      d="M2.5 7.91663V10.4166"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="bevel"
-    />
-    <path
-      d="M17.5 7.91663V10.4166"
-      stroke="#3B82F6"
-      style={{
-        stroke: "#3B82F6",
-        stroke: "color(display-p3 0.2314 0.5098 0.9647)",
-        strokeOpacity: 1,
-      }}
-      strokeWidth={2}
-      strokeLinejoin="bevel"
-    />
-  </svg>)
-}
+
 const MainPage = ({user,setUserData}) => {
-  return (
-    <div className={`${user ? "display" : "hidden"} h-screen flex flex-col`}>
+  if(user){
+    return (
 
-      {/* 헤더 */}
-      <HelloUser user={user}/>
-
-      {/* 나의 채팅방 섹션 */}
-      <section className="px-4 py-2 flex-grow overflow-y-auto">
-      <ChatRooms/>
-      <ChatRoomRanking/>
-      </section>
-
-
-      {/* 하단 네비게이션 고정 (artboard 내에 고정) */}
-      <nav className="bottom-0 left-0 right-0 bg-white border-t w-full h-30">
-        <div className="flex justify-around py-4">
-          <button className="flex flex-col items-center">
-            <HomeIcon/>
-            <span className="text-sm text-blue-500">홈</span>
-          </button>
-          <button className="flex flex-col items-center">
-            <CalendarIcon/>
-            <span className="text-sm text-blue-500">캘린더</span>
-          </button>
-          <button className="flex flex-col items-center">
-            <PlannerIcon/>
-            <span className="text-sm text-blue-500">플래너</span>
-          </button>
+        <div className={`${user ? "display" : "hidden"} h-screen flex flex-col w-full`}>
+    
+          {/* 헤더 */}
+          <HelloUser user={user}/>
+    
+          {/* 나의 채팅방 섹션 */}
+          <section className="px-4 py-2 flex-grow overflow-y-auto">
+          <ChatRooms/>
+          <ChatRoomRanking/>
+          </section>
+    
+    
+          <nav className="fixed bottom-0 left-0 right-0 bg-white border-t w-full h-30">
+            <div className="flex justify-around py-4">
+              <button className="flex flex-col items-center" onClick={()=>{location.href="/"}}>
+                <HomeIcon/>
+                <span className="text-sm text-blue-500">홈</span>
+              </button>
+              <button className="flex flex-col items-center" onClick={()=>{location.href="/calendar"}}>
+                <CalendarIcon/>
+                <span className="text-sm text-blue-500">캘린더</span>
+              </button>
+              <button className="flex flex-col items-center" onClick={()=>{location.href="/studyplanner"}}>
+                <PlannerIcon/>
+                <span className="text-sm text-blue-500">플래너</span>
+              </button>
+            </div>
+          </nav>
         </div>
-      </nav>
-    </div>
-  )
+    )
+  }
+  else{
+    return (<div className="flex flex-col">
+      <div className="flex align-middle">
+        <div>
+          loading...
+        </div>
+      </div>
+    </div>)
+  }
 }
 export default function Page() {
   const [userData, setUserData] = useState(null);
+  // const [isDarkMode, setIsDarkMode] = useState(() => {
+  //   return localStorage.getItem("isDarkMode") || "Light";
+  // });
+
+  // useEffect(() => {
+  //   document.documentElement.classList.toggle("dark", isDarkMode === "Dark");
+  // }, [isDarkMode]);
+
+  // const toggleTheme = () => {
+  //   const newTheme = isDarkMode === "Light" ? "Dark" : "Light";
+  //   setIsDarkMode(newTheme);
+  //   localStorage.setItem("isDarkMode", newTheme);
+  // };
+
   return (
-    <LoginCheck setUserData={setUserData}>
-        <MainPage user={userData} setUserData={setUserData} />
-      </LoginCheck>
+    <LoginChecker setUserData={setUserData}>
+        {!userData?<div className="absolute h-screen w-screen z-50 bg-white bg-opacity-50">
+        <div className="flex justify-center items-center h-screen">
+          <div className="flex flex-col h-screen justify-center">
+            <div className="text-4xl font-extrabold text-blue-600 tracking-wide">
+              Loading...
+            </div>
+          </div>
+        </div>
+      </div>:
+      <MainPage user={userData} setUserData={setUserData} />
+      }
+      </LoginChecker>
   );}

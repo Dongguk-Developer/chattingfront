@@ -1,7 +1,10 @@
 "use client";
 
 import LoginChecker from "../LoginChecker";
-import { useState,useRef,useEffect } from "react";
+import { useState,useRef,useEffect,useCookies } from "react";
+import {CURRENT_BACKEND} from "../res/path.js";
+ 
+
 const HelloUser = ()=>{
   return (
   <header className="flex justify-between items-center px-4 py-4">
@@ -63,16 +66,53 @@ const ChatRooms = ()=>{
 const ProfilePage = ({user,setUserData})=> {
   const userRef = useRef(user); 
   const [profilePicture, setProfilePicture] = useState(null);
+  const LogOut = async() => {
+    const res = await fetch(CURRENT_BACKEND+"/logout", {
+      method: "POST",
+      credentials: "include",  // 쿠키를 포함하여 요청
+    }).then(async(response) => {
+      if(await response.status==200){
+        location.href = "/login";
+      }
+    })
+
+  }
+  const Delete_Account = async() => {
+    
+    const res = await fetch(CURRENT_BACKEND+"/profile/delete", {
+      method: "POST",
+      credentials: "include",  // 쿠키를 포함하여 요청
+    })
+    .then(async(response) => {
+        if(response.status!=200){
+            location.href = "/login";
+        }
+        else{
+          setTimeout(function(){
+              document.cookie = `sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+          },100)
+          setAlert({
+            type: "success",
+            message: "성공",
+          });
+          
+        }
+    })
+    .then((data) => console.log("Get Cookie Response:", data))
+    .catch((error) => console.error("Error getting cookie:", error));
+  }
 
   useEffect(() => {
     userRef.current = user; // user가 변경될 때마다 userRef를 업데이트
     console.log(user)
   }, [user]);
   useEffect(()=>{
-    if(user&&user.profile_image!==null){
-      setProfilePicture(user.profile_image)
+    if(user&&user.profile_image.profile_image_url!==null){
+      setProfilePicture(user.profile_image.profile_image_url)
     }
   },[user])
+
+
   return (
       <div className={`${user ? "display" : "hidden"} h-screen`}>
         {/* 헤더 */}
@@ -83,7 +123,7 @@ const ProfilePage = ({user,setUserData})=> {
             <div className="flex flex-col items-start">
                 <div className="w-full">
                     
-                    <div className="rounded-full w-24 h-24 flex items-center justify-center mb-4" style={{marginLeft:"auto",marginRight:"auto"}}>
+                    <div className="rounded-full w-48 h-48 flex items-center justify-center mb-4" style={{marginLeft:"auto",marginRight:"auto"}}>
       {profilePicture ? (
                         <img 
                             src={profilePicture} 
@@ -94,21 +134,19 @@ const ProfilePage = ({user,setUserData})=> {
                           <div className="bg-gray-600 " style={{marginLeft:"auto",marginRight:"auto"}}>
                           <span className="text-white text-xl">기본 프로필</span>
                       </div>)}
-</div>
+                    </div>
 
 
                     <div className="text-center">
-                        <h1 className="text-2xl font-semibold">{user ? `${user.user_nickname}` : "Loading..."}</h1>
-                        <p className="text-gray-500">{user ? `#${user.user_age} #${user.user_mbti} #${user.user_job} #${user.user_study_field}` : "Loading..."}</p>
+                        <h1 className="text-2xl font-semibold">{user ? `${user.user.user_nickname}` : "Loading..."}</h1>
+                        <p className="text-gray-500">{user ? `#${user.user.user_age} #${user.user.user_mbti} #${user.user.user_job} #${user.user.user_study_field}` : "Loading..."}</p>
                     </div>
                 </div>
 
                 
                 <div className="divider w-full my-4"></div>
                 <button className="text-left font-bold text-black text-lg py-2 mb-2" onClick={function(){location.href="/edit_profile"}}>프로필 편집</button>
-                <button className="text-left font-bold text-black text-lg py-2 mb-2">프로필 뱃지 설정</button>
-                <button className="text-left font-bold text-black text-lg py-2 mb-2">알림 설정</button>
-                <button className="text-left font-bold text-black text-lg py-2 mb-2">시스템 테마</button>
+                <button className="text-left font-bold text-black text-lg py-2 mb-2" onClick={LogOut}>로그아웃</button>
                 <button className="text-left font-bold text-black text-lg py-2 mb-2" style={{color:"red"}} onClick={()=>document.getElementById('my_modal_1').showModal()}>회원 탈퇴</button>
                 {/* Open the modal using document.getElementById('ID').showModal() method */}
                 <dialog id="my_modal_1" className="modal">
@@ -119,7 +157,7 @@ const ProfilePage = ({user,setUserData})=> {
                     <form method="dialog">
                         {/* if there is a button in form, it will close the modal */}
                         <button className="btn bg-[rgb(229,229,229)] mr-2">취소</button>
-                        <button className="btn btn-error text-white">탈퇴하기</button>
+                        <button className="btn btn-error text-white" onClick={Delete_Account}>탈퇴하기</button>
                     </form>
                     </div>
                 </div>
@@ -135,6 +173,16 @@ export default function Page() {
   const [userData, setUserData] = useState(null);
   return (
     <LoginChecker setUserData={setUserData}>
-        <ProfilePage user={userData} setUserData={setUserData} />
-      </LoginChecker>
+    {!userData?<div className="absolute h-screen w-screen z-50 bg-white bg-opacity-50">
+    <div className="flex justify-center items-center h-screen">
+      <div className="flex flex-col h-screen justify-center">
+        <div className="text-4xl font-extrabold text-blue-600 tracking-wide">
+          Loading...
+        </div>
+      </div>
+    </div>
+  </div>:        <ProfilePage user={userData} setUserData={setUserData} />
+  }
+  </LoginChecker>
+
   );}
